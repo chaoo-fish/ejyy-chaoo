@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chaoo.service.basic.dto.userBuildInfoDto;
 import com.chaoo.service.basic.entity.UserBuilding;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public interface UserBuildingMapper extends BaseMapper<UserBuilding> {
             "         left join ejyy_building_info on ejyy_building_info.id = ejyy_user_building.building_id " +
             "where ejyy_user_building.wechat_mp_user_id = #{wuserId} " +
             "and ejyy_user_building.status = 1 " + // 1 是用户住宅
-            "and ejyy_building_info.community_id = #{bcommunityId}" +
+            "and ejyy_building_info.community_id = #{bcommunityId} " +
             "order by ejyy_user_building.id desc")
-    List<userBuildInfoDto> selectBuild(Long wuserId,Long bcommunityId);
+    List<userBuildInfoDto> selectBuild(@Param("wuserId") Long wuserId,@Param("bcommunityId") Long bcommunityId);
 
 }

@@ -44,7 +44,7 @@ public class OptionController {
         // 通过电话查询业主
         QueryWrapper<WechatMpUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phone",phoneDto.getPhone());
-        queryWrapper.eq("intact",true);
+        queryWrapper.eq("intact",1);
 
         WechatMpUser owerInfo = wechatMpUserService.getOne(queryWrapper);
         if (ObjectUtils.isEmpty(owerInfo)){ // 未查询到业主信息
