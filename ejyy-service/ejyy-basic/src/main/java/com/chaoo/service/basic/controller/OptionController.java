@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author chaoo
@@ -56,7 +56,30 @@ public class OptionController {
         if (userBuildInfoDtos.size() == 0) {
             return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(),"未查询到业主信息");
         }
-
-        return Result.ok();
+        Map<String, ArrayList<userBuildInfoDto>> buildings = new HashMap<>();
+        for (userBuildInfoDto ud : userBuildInfoDtos) {
+            if (1 == ud.getType()) { // 当前是住宅
+                if (!buildings.containsKey("houses")) {
+                    buildings.put("houses",new ArrayList<>());
+                }
+                buildings.get("houses").add(ud);
+            }
+            if (2 == ud.getType()) { // 当前是车位
+                if (!buildings.containsKey("carports")) {
+                    buildings.put("carports",new ArrayList<>());
+                }
+                buildings.get("carports").add(ud);
+            }
+            if (5 == ud.getType()) { // 当前是车库
+                if (!buildings.containsKey("garages")) {
+                    buildings.put("garages",new ArrayList<>());
+                }
+                buildings.get("garages").add(ud);
+            }
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("owerInfo",owerInfo);
+        data.put("buildings",buildings);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
     }
 }
