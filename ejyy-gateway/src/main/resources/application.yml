@@ -1,0 +1,21 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.33.135:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: user-server
+          uri: lb://user-server
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1

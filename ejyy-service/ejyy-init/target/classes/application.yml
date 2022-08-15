@@ -1,0 +1,20 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: init-server
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.33.135:3306/ejyy?useSSL=false&characterEncoding=UTF8
+    username: root
+    password: root
+
+mybatis-plus:
+  type-aliases-package: com.chaoo.service.init.mapper
+  global-config:
+    db-config:
+      id-type: auto # 自增长
+      table-prefix: ejyy_
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
