@@ -1,10 +1,13 @@
 package com.chaoo.service.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chaoo.common.utils.*;
 import com.chaoo.service.user.config.KaptchaConfig;
 import com.chaoo.service.user.dto.*;
 import com.chaoo.service.user.entity.PropertyCompanyAuth;
+import com.chaoo.service.user.entity.PropertyCompanyUser;
 import com.chaoo.service.user.entity.PropertyCompanyUserDefaultCommunity;
 import com.chaoo.service.user.entity.PropertyCompanyUserLogin;
 import com.chaoo.service.user.service.*;
@@ -55,6 +58,24 @@ public class UserController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+
+    // 退出
+    @GetMapping("/logout")
+    public Result logout(HttpServletRequest request) {
+        String token = request.getHeader("ejyy-pc-token");
+        String account = TokenManager.getNameFromToken(token);
+        // 通过用户名查找id
+        QueryWrapper<PropertyCompanyUser> pcq = new QueryWrapper<>();
+        pcq.eq("account",account);
+        // 用户 id
+        Integer propertyCompanyUserId = propertyCompanyUserService.getOne(pcq).getId();
+        UpdateWrapper<PropertyCompanyAuth> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("property_company_user_id",propertyCompanyUserId);
+        updateWrapper.set("token", null);
+        propertyCompanyAuthService.update(updateWrapper);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),"账号已退出");
+    }
+
     @GetMapping("/info")
     public Result info(HttpServletRequest request) {
         String token = request.getHeader("ejyy-pc-token");
@@ -67,11 +88,11 @@ public class UserController {
                 .account(loginInfo.getAccount())
                 .open_id(loginInfo.getOpenId())
                 .real_name(loginInfo.getRealName())
-                .gender(loginInfo.isGender()?1:2) // 女是2，男是1
+                .gender(loginInfo.isGender() ? 1 : 2) // 女是2，男是1
                 .avatar_url(loginInfo.getAvatarUrl())
                 .phone(MaskPhone.mask(loginInfo.getPhone())) // 屏蔽手机号
                 .join_company_at(loginInfo.getJoinCompanyAt())
-                .admin(loginInfo.isAdmin()?1:0)
+                .admin(loginInfo.isAdmin() ? 1 : 0)
                 .created_at(loginInfo.getCreatedAt())
                 .subscribed(loginInfo.getSubscribed())
                 .access(StringUtils.hasLength(loginInfo.getContent()) ? loginInfo.getContent() : "[]")
@@ -91,10 +112,10 @@ public class UserController {
             } else {
                 CommunityList communityList = CommunityList.builder()
                         .community_id(communityDto.getCommunityId())
-                        .access_remote(communityDto.isAccessRemote()?1:0)
-                        .fitment_pledge(communityDto.isFitmentPledge()?1:0)
-                        .access_nfc(communityDto.isAccessNfc()?1:0)
-                        .access_qrcode(communityDto.isAccessQrcode()?1:0)
+                        .access_remote(communityDto.isAccessRemote() ? 1 : 0)
+                        .fitment_pledge(communityDto.isFitmentPledge() ? 1 : 0)
+                        .access_nfc(communityDto.isAccessNfc() ? 1 : 0)
+                        .access_qrcode(communityDto.isAccessQrcode() ? 1 : 0)
                         .name(communityDto.getName())
                         .build();
                 postInfo.getCommunity_list().add(communityList);
@@ -252,14 +273,14 @@ public class UserController {
 
 
         // 缓存用于登录校验
-        String key = UUID.randomUUID().toString().replaceAll("-","");
+        String key = UUID.randomUUID().toString().replaceAll("-", "");
         // 存储到 Redis 中
-        redisTemplate.opsForValue().set(key, verifyCode, 60*3, TimeUnit.SECONDS);
-        redisTemplate.opsForValue().set(verifyCode, verifyCode, 60*3, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, verifyCode, 60 * 3, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(verifyCode, verifyCode, 60 * 3, TimeUnit.SECONDS);
 
         // 将key存储到本地cookie中
         Cookie cookie = new Cookie("captchaIdentity", key);
-        cookie.setMaxAge(60*3); // 有效时间为 3 分钟
+        cookie.setMaxAge(60 * 3); // 有效时间为 3 分钟
         response.addCookie(cookie);
 
         // 生成图片
