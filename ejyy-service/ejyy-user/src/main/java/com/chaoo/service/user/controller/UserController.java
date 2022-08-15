@@ -121,14 +121,14 @@ public class UserController {
     public Result login(@RequestBody LoginParam loginParam, HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");
         // 获取验证码
-        String captcha = loginParam.getCaptcha();
+        String captcha = loginParam.getCaptcha().toUpperCase(); // 验证码不需要区分大小写
         if (!StringUtils.hasLength(captcha)) {
             return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码不能为空");
         }
         // 从 Redis 中获取验证码值
         String redisCaptcha = (String) redisTemplate.opsForValue().get(captcha);
         if (!StringUtils.hasLength(redisCaptcha)) {
-            return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码失效，请重新获取");
+            return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码错误或失效,请重新获取");
         }
         /*if (StringUtils.hasLength(redisCaptcha)) {
             // 校验验证码
