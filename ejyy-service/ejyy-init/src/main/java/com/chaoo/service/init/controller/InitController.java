@@ -1,13 +1,16 @@
 package com.chaoo.service.init.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chaoo.common.utils.IDCardUtil;
 import com.chaoo.common.utils.MD5;
 import com.chaoo.common.utils.Result;
+import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.init.dto.ParamDto;
 import com.chaoo.service.init.entity.*;
 import com.chaoo.service.init.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -34,6 +37,14 @@ public class InitController {
     @ResponseBody
     @PostMapping("/run")
     public Result run(@RequestBody ParamDto paramDto) {
+        // 验证 用户 账号唯一
+        QueryWrapper<PropertyCompanyUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("account",paramDto.getAccount());
+        PropertyCompanyUser user = propertyCompanyUserService.getOne(queryWrapper);
+        if (!ObjectUtils.isEmpty(user)) {
+            return Result.ok(ResultCodeEnum.ACCOUNT_EXIST.getCode(), "账号存在");
+        }
+
         // 保存个人信息
         PropertyCompanyUser propertyCompanyUser = PropertyCompanyUser.builder()
                 .account(paramDto.getAccount())
