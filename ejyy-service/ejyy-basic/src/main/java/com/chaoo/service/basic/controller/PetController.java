@@ -22,6 +22,8 @@ import java.util.*;
 /**
  * @Author chaoo
  * @Date: 2022/08/15/ 21:17
+ *
+ * 宠物
  */
 @Slf4j
 @CrossOrigin // 跨域
@@ -129,9 +131,11 @@ public class PetController {
         LambdaQueryWrapper<Pet> queryWrapper = new LambdaQueryWrapper<>();
         // 添加条件
         queryWrapper.like(ps.getSex() != null, Pet::getSex, ps.getSex());
-        queryWrapper.like(ps.getLicense() != null, Pet::getPet_license, ps.getLicense());
+        // 未登记
+        queryWrapper.eq(ps.getLicense() != null && !ps.getLicense(), Pet::getPet_license, "");
+        // 以登记
+        queryWrapper.ne(ps.getLicense() != null && ps.getLicense(), Pet::getPet_license, "");
         queryWrapper.like(ps.getBreed() != null, Pet::getBreed, ps.getBreed());
-//        queryWrapper.like(ps.getCoat_color() !=  null,Pet::getCoat_color,ps.getCoat_color());
         queryWrapper.like(ps.getRemove() != null, Pet::getRemove, ps.getRemove());
         // 添加社区条件
         queryWrapper.eq(Pet::getCommunity_id, ps.getCommunity_id());
