@@ -21,7 +21,7 @@ public class PetInfo {
     private boolean haveLicense;  // 是否有证
     private String pet_license; // 编号
     private Long pet_license_award_at;
-    private Long vaccine_type;// 疫苗类型
+    private String vaccine_type;// 疫苗类型
     private Long vaccinated_at;
 
 }
