@@ -15,8 +15,6 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-<<<<<<< HEAD
-=======
     <dependencies>
         <dependency>
             <groupId>com.chaoo</groupId>
@@ -28,6 +26,5 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
     </dependencies>
->>>>>>> v1.1
 
 </project>
