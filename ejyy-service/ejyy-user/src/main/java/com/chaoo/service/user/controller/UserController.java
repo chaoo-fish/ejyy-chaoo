@@ -151,17 +151,7 @@ public class UserController {
         if (!StringUtils.hasLength(redisCaptcha)) {
             return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码错误或失效,请重新获取");
         }
-        /*if (StringUtils.hasLength(redisCaptcha)) {
-            // 校验验证码
-            if (!StringUtils.hasLength(captcha) || "".equals(captcha.toLowerCase())) {
-                return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码不能为空");
-            }
-            if (!redisCaptcha.equals(captcha)) {
-                return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码错误");
-            }
-        } else {
-            return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码失效，请重新获取");
-        }*/
+
         // 清除 Redis 中该验证码信息
         redisTemplate.delete(captcha);
 

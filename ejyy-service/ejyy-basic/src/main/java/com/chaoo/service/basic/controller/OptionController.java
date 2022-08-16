@@ -72,7 +72,7 @@ public class OptionController {
             }
             if (5 == ud.getType()) { // 当前是车库
                 if (!buildings.containsKey("garages")) {
-                    buildings.put("garages",new ArrayList<>());
+                    buildings.put("garages", new ArrayList<>());
                 }
                 buildings.get("garages").add(ud);
             }
