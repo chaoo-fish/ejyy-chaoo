@@ -141,9 +141,7 @@ public class UserController {
     @PostMapping("/account_login")
     public Result login(@RequestBody LoginParam loginParam, HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");
-
-        // 暂时关闭验证码
-        /*// 获取验证码
+        // 获取验证码
         String captcha = loginParam.getCaptcha().toUpperCase(); // 验证码不需要区分大小写
         if (!StringUtils.hasLength(captcha)) {
             return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码不能为空");
@@ -153,8 +151,19 @@ public class UserController {
         if (!StringUtils.hasLength(redisCaptcha)) {
             return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码错误或失效,请重新获取");
         }
+        /*if (StringUtils.hasLength(redisCaptcha)) {
+            // 校验验证码
+            if (!StringUtils.hasLength(captcha) || "".equals(captcha.toLowerCase())) {
+                return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码不能为空");
+            }
+            if (!redisCaptcha.equals(captcha)) {
+                return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码错误");
+            }
+        } else {
+            return Result.ok(ResultCodeEnum.CAPTCHA_ERROR.getCode(), "验证码失效，请重新获取");
+        }*/
         // 清除 Redis 中该验证码信息
-        redisTemplate.delete(captcha);*/
+        redisTemplate.delete(captcha);
 
         // 调用登录方法进行登录
         LoginInfo loginInfo = propertyCompanyUserService.login(loginParam.getAccount());
