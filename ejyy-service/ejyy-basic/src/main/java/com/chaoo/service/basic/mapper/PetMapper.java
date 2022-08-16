@@ -12,6 +12,7 @@ public interface PetMapper extends BaseMapper<Pet> {
 
     /**
      * 宠物详细信息
+     *
      * @return
      */
     @Select("select ejyy_pet.id, " +
@@ -34,5 +35,5 @@ public interface PetMapper extends BaseMapper<Pet> {
             "         left join ejyy_wechat_mp_user on ejyy_wechat_mp_user.id = ejyy_pet.wechat_mp_user_id " +
             "where ejyy_pet.id = #{id} " +
             " and community_id = #{community_id}")
-    PetDetail deatil(@Param("id")Integer id, @Param("community_id")Integer community_id);
+    PetDetail deatil(@Param("id") String id, @Param("community_id") Integer community_id);
 }

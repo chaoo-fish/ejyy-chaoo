@@ -2,6 +2,7 @@ package com.chaoo.service.basic;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.chaoo.service.basic.dto.PetDetail;
 import com.chaoo.service.basic.entity.Pet;
 import com.chaoo.service.basic.service.PetService;
 import org.junit.jupiter.api.Test;
@@ -37,5 +38,12 @@ public class PetTest {
         System.out.println("id = " + id);
         Integer c = jo.getInteger("community_id");
         System.out.println("c = " + c);
+    }
+
+    @Test
+    void test3(){
+        PetDetail deatil = petService.deatil("3", 3);
+
+        System.out.println("deatil = " + deatil);
     }
 }

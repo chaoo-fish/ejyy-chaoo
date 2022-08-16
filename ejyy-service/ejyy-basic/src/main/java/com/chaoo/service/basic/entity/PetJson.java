@@ -28,7 +28,7 @@ public class PetJson implements Serializable {
     private String breed; //品种
     private String pet_license; // 宠物证
     private Long pet_license_award_at;
-    private Boolean remove; // default 0
+    private Integer remove; // default 0
     private Integer remove_reason;
     private Long removed_at;
     private Long created_at; // 创建时间

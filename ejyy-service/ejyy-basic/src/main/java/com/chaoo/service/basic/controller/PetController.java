@@ -3,11 +3,11 @@ package com.chaoo.service.basic.controller;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
-import com.chaoo.service.basic.dto.PetInfo;
-import com.chaoo.service.basic.dto.PetSearch;
+import com.chaoo.service.basic.dto.*;
 import com.chaoo.service.basic.entity.Pet;
 import com.chaoo.service.basic.entity.PetJson;
 import com.chaoo.service.basic.entity.PetVaccinate;
@@ -34,14 +34,61 @@ public class PetController {
     @Autowired
     private PetVaccinateService petVaccinateService;
 
+    /**
+     * 添加宠物疫苗
+     * @param jsonVaccinate json数据
+     * @return result
+     */
+    @PostMapping("/vaccinate/{id}")
+    public Result vaccinate(@PathVariable("id") Long id, @RequestBody String jsonVaccinate){
+        JSONObject jo = JSONObject.parseObject(jsonVaccinate);
+        System.out.println(jo.getString("vaccine_type"));
+        System.out.println("id = " + id);
+        return Result.ok();
+    }
 
     // 宠物详细信息
     @PostMapping("/detail")
-    public Result detail(@RequestBody String jsonPet){
+    public Result detail(@RequestBody String jsonPet) {
         JSONObject jo = JSONObject.parseObject(jsonPet);
         String id = jo.getString("id");
         Integer communityId = jo.getInteger("community_id");
-        return Result.ok();
+        // 宠物详细信息
+        PetDetail preinfo = petService.deatil(id, communityId);
+        // 格式化信息返回前端
+        PetDetailJson info = PetDetailJson.builder()
+                .id(preinfo.getId())
+                .wechat_mp_user_id(preinfo.getWechatMpUserId())
+                .name(preinfo.getRealName())
+                .sex(preinfo.getSex())
+                .pet_type(preinfo.getPetType())
+                .coat_color(preinfo.getCoatColor())
+                .breed(preinfo.getBreed())
+                .photo(preinfo.getPhoto())
+                .pet_license(preinfo.getPetLicense())
+                .pet_license_award_at(preinfo.getPetLicenseAwardAt())
+                .community_name(preinfo.getCommunityName())
+                .remove(preinfo.getRemove())
+                .remove_reason(preinfo.getRemoveReason())
+                .removed_at(preinfo.getRemovedAt())
+                .real_name(preinfo.getRealName())
+                .build();
+        // 宠物疫苗
+        LambdaQueryWrapper<PetVaccinate> pvQuery = new LambdaQueryWrapper<>();
+        pvQuery.eq(PetVaccinate::getId, preinfo.getId());
+        List<PetVaccinate> preVaccinates = petVaccinateService.list(pvQuery);
+        List<PetVaccinateLessInfo> vaccinates = new ArrayList<>();
+        for (PetVaccinate pv : preVaccinates) {
+            vaccinates.add(PetVaccinateLessInfo.builder()
+                    .vaccinated_at(pv.getVaccinatedAt())
+                    .vaccine_type(pv.getVaccineType())
+                    .build());
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("info", info);
+        data.put("vaccinates", vaccinates);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
     // 宠物列表

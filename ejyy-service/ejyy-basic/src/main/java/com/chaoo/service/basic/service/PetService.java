@@ -5,5 +5,5 @@ import com.chaoo.service.basic.dto.PetDetail;
 import com.chaoo.service.basic.entity.Pet;
 
 public interface PetService extends IService<Pet> {
-    PetDetail deatil(Integer id, Integer cid);
+    PetDetail deatil(String id, Integer cid);
 }

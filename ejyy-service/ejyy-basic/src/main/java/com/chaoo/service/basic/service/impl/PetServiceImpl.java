@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class PetServiceImpl extends ServiceImpl<PetMapper, Pet> implements PetService {
 
     @Override
-    public PetDetail deatil(Integer id, Integer cid) {
+    public PetDetail deatil(String id, Integer cid) {
         return baseMapper.deatil(id, cid);
     }
 }

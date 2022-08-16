@@ -21,7 +21,6 @@ public class Pet implements Serializable {
     private Long id;
     private Long wechatMpUserId;
     private Long communityId;
-
     /**
      * 1 狗
      */
@@ -43,7 +42,7 @@ public class Pet implements Serializable {
     private String breed; //品种
     private String petLicense; // 宠物证
     private Long petLicenseAwardAt = 1660266965660L; // 证书颁发的日期
-    private Boolean remove; // default 0
+    private Integer remove; // default 0
     private Integer removeReason;
     private Long removedAt;
     private Long createdAt; // 创建时间

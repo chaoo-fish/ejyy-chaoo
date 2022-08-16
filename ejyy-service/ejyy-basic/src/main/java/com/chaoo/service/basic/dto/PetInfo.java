@@ -7,7 +7,7 @@ import lombok.Data;
  * @Author chaoo
  * @Date: 2022/08/15/ 21:22
  *
- * 宠物信息
+ * 接收创建的宠物信息
  */
 @Data
 public class PetInfo {
