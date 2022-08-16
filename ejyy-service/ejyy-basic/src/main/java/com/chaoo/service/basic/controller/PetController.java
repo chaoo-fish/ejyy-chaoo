@@ -35,19 +35,58 @@ public class PetController {
     private PetVaccinateService petVaccinateService;
 
     /**
+     * 更新宠物编号
+     */
+    @PostMapping("/license/{id}")
+    public Result license(@PathVariable("id") Long id, @RequestBody String jsonPet) {
+        JSONObject jo = JSONObject.parseObject(jsonPet);
+        String petLicense = jo.getString("pet_license");
+        Long awardAt = jo.getLong("pet_license_award_at");
+        Long communityId = jo.getLong("community_id");
+        LambdaQueryWrapper<Pet> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Pet::getId, id);
+        queryWrapper.eq(Pet::getCommunity_id, communityId);
+        // 先获取
+        Pet pet = petService.getOne(queryWrapper);
+        pet.setPet_license(petLicense);
+        pet.setPet_license_award_at(awardAt);;
+        boolean flag = petService.updateById(pet);
+        if (!flag) {
+            return Result.ok(ResultCodeEnum.DATA_MODEL_UPDATE_FAIL.getCode(),"更新宠物登记证件失败");
+        }
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),"更新宠物登记证件成功");
+    }
+
+    /**
      * 添加宠物疫苗
-     * @param jsonVaccinate json数据
+     *
+     * @param jsonVaccinate
+     *         json数据
      * @return result
      */
     @PostMapping("/vaccinate/{id}")
-    public Result vaccinate(@PathVariable("id") Long id, @RequestBody String jsonVaccinate){
+    public Result vaccinate(@PathVariable("id") Long id, @RequestBody String jsonVaccinate) {
         JSONObject jo = JSONObject.parseObject(jsonVaccinate);
-        System.out.println(jo.getString("vaccine_type"));
-        System.out.println("id = " + id);
-        return Result.ok();
+        String vtype = jo.getString("vaccine_type");
+        Long vat = jo.getLong("vaccinated_at");
+        PetVaccinate pv = PetVaccinate.builder()
+                .pet_id(id)
+                .vaccine_type(vtype)
+                .vaccinated_at(vat)
+                .created_at(new Date().getTime())
+                .build();
+        petVaccinateService.save(pv);
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", pv);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
-    // 宠物详细信息
+
+    /**
+     * 宠物详细信息
+     * @param jsonPet
+     * @return
+     */
     @PostMapping("/detail")
     public Result detail(@RequestBody String jsonPet) {
         JSONObject jo = JSONObject.parseObject(jsonPet);
@@ -73,7 +112,11 @@ public class PetController {
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
-    // 宠物列表
+    /**
+     * 宠物列表
+     * @param jsonPet
+     * @return
+     */
     @PostMapping("/list")
     public Result list(@RequestBody String jsonPet) {
         PetSearch ps = JSON.parseObject(jsonPet, PetSearch.class);
@@ -98,7 +141,7 @@ public class PetController {
         petService.page(pageInfo, queryWrapper);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("page_num", pageInfo.getPages());
+        data.put("page_num", pageInfo.getCurrent());
         data.put("page_size", pageInfo.getSize());
         data.put("total", pageInfo.getTotal());
         data.put("list", pageInfo.getRecords());
@@ -107,7 +150,11 @@ public class PetController {
         return Result.ok(200, data);
     }
 
-    // 宠物创建
+    /**
+     * 宠物创建
+     * @param json
+     * @return
+     */
     @PostMapping("/create")
     public Result create(@RequestBody String json) {
         PetInfo petInfo = JSON.parseObject(json, PetInfo.class);
