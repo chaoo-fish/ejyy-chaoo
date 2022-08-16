@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Builder
 public class NoticeToUserReaded implements Serializable {
     private Long id;
-    private Long noticeId;
-    private Long wechatMpUserId;
-    private Long createdAt;
+    private Long notice_id;
+    private Long wechat_mp_user_id;
+    private Long created_at;
 }

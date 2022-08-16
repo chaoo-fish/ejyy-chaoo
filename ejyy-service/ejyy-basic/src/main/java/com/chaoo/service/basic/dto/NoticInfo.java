@@ -10,14 +10,15 @@ import lombok.Data;
  */
 @Data
 public class NoticInfo {
+    private Long user_id;
     private String title; // "通知标题",
     private String overview; //  "通知概述",
-    private String published; //  1是发布
+    private Integer published; //  1是发布
     private Boolean oa_tpl_msg; // :false,
 
     private String tpl; // : "",
-    private String[] tpl_content; // : [],
+    private String tpl_content; // : [],
 
-    private String[] content; //
-    private String community_id; //  3
+    private String content; //
+    private Long community_id; //  3
 }

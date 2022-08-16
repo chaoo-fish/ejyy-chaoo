@@ -17,15 +17,15 @@ public class NoticeToUser implements Serializable {
     private String title;
     private String overview;
     private String content;
-    private Long communityId;
+    private Long community_id;
     /**
      * 1 物业公司 2 系统
      */
-    private Boolean refer;
-    private Long noticeTplId;
-    private Boolean published;
-    private Long publishedAt;
-    private Long publishedBy;
-    private Long createdBy;
-    private Long createdAt;
+    private Integer refer;
+    private Long notice_tpl_id;
+    private Integer published;
+    private Long published_at;
+    private Long published_by;
+    private Long created_by;
+    private Long created_at;
 }
