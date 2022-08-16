@@ -1,6 +1,7 @@
 package com.chaoo.service.basic.controller;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chaoo.common.utils.Result;
@@ -37,7 +38,9 @@ public class PetController {
     // 宠物详细信息
     @PostMapping("/detail")
     public Result detail(@RequestBody String jsonPet){
-        System.out.println(jsonPet);
+        JSONObject jo = JSONObject.parseObject(jsonPet);
+        String id = jo.getString("id");
+        Integer communityId = jo.getInteger("community_id");
         return Result.ok();
     }
 
