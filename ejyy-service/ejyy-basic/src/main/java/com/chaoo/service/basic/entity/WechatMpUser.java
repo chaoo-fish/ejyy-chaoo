@@ -9,19 +9,19 @@ public class WechatMpUser implements Serializable {
 
     private Long id;
 
-    private String openId;
+    private String open_id;
 
-    private String unionId;
+    private String union_id;
 
-    private String nickName;
+    private String nick_name;
 
-    private String realName;
+    private String real_name;
 
     private String idcard;
 
     private String phone;
 
-    private String avatarUrl;
+    private String avatar_url;
 
     /**
      * 1 男 2女
@@ -35,7 +35,7 @@ public class WechatMpUser implements Serializable {
      */
     private Integer intact;
 
-    private Long createdAt;
+    private Long created_at;
 
 
 }

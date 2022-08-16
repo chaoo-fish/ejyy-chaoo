@@ -19,12 +19,12 @@ import java.io.Serializable;
 public class Pet implements Serializable {
 
     private Long id;
-    private Long wechatMpUserId;
-    private Long communityId;
+    private Long wechat_mp_user_id;
+    private Long community_id;
     /**
      * 1 狗
      */
-    private Integer petType;
+    private Integer pet_type;
 
     private String name;
 
@@ -38,12 +38,12 @@ public class Pet implements Serializable {
      * 毛色
      */
 
-    private String coatColor;
+    private String coat_color;
     private String breed; //品种
-    private String petLicense; // 宠物证
-    private Long petLicenseAwardAt = 1660266965660L; // 证书颁发的日期
+    private String pet_license; // 宠物证
+    private Long pet_license_award_at = 1660266965660L; // 证书颁发的日期
     private Integer remove; // default 0
-    private Integer removeReason;
-    private Long removedAt;
-    private Long createdAt; // 创建时间
+    private Integer remove_reason;
+    private Long removed_at;
+    private Long created_at; // 创建时间
 }

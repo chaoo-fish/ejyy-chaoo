@@ -14,7 +14,6 @@ public class PetInfo {
     private Long user_id;
     private Long community_id;
 
-    @TableField("petType")
     private Integer pet_type;
     private String name;
     private Integer sex;

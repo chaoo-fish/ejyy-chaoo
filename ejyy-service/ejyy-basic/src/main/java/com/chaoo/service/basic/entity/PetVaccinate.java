@@ -20,13 +20,11 @@ public class PetVaccinate implements Serializable {
 
     private Long id;
 
-    private Long petId;
+    private Long pet_id;
 
-    private Long vaccinatedAt;
+    private Long vaccinated_at;
 
-    private String vaccineType;
+    private String vaccine_type;
 
-    private Long createdAt;
-
-
+    private Long created_at;
 }
