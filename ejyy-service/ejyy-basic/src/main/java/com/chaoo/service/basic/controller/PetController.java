@@ -36,9 +36,17 @@ public class PetController {
                 .coatColor(petInfo.getCoat_color())
                 .breed(petInfo.getBreed())
                 .createdAt(new Date().getTime())
+                .petLicense(petInfo.getPet_license())
+                .petLicenseAwardAt(new Date().getTime())
                 .build();
-        System.out.println("pet = " + pet);
+        log.info("获取宠物信息: " + pet);
+        // 宠物有证
+        if (petInfo.isHaveLicense()) {
+            // 更新疫苗
+
+        }
 //        petService.save(pet);
+        System.out.println("pet = " + pet);
         return Result.ok(300,"yes");
     }
 }

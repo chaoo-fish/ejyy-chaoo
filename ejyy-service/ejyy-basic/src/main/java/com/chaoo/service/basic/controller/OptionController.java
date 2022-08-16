@@ -79,7 +79,7 @@ public class OptionController {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("owerInfo",owerInfo);
-        data.put("buildings",buildings);
+//        data.put("buildings",buildings); // 不需要
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
     }
 }

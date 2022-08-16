@@ -47,7 +47,7 @@ public class Pet implements Serializable {
 
     private String breed; //品种
 
-    private String petLicense = "666";
+    private String petLicense = "666"; // 宠物证
 
     private Long petLicenseAwardAt = 1660266965660L; // 证书颁发的日期
 
