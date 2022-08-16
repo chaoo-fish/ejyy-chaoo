@@ -13,7 +13,7 @@ public class NoticInfo {
     private String title; // "通知标题",
     private String overview; //  "通知概述",
     private String published; //  1是发布
-    private String oa_tpl_msg; // :false,
+    private Boolean oa_tpl_msg; // :false,
 
     private String tpl; // : "",
     private String[] tpl_content; // : [],
