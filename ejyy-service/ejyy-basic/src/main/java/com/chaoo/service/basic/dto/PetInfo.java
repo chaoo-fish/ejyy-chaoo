@@ -1,18 +1,20 @@
 package com.chaoo.service.basic.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
  * @Author chaoo
  * @Date: 2022/08/15/ 21:22
  *
- * 宠物信息 阉割版
+ * 宠物信息
  */
 @Data
 public class PetInfo {
     private Long user_id;
     private Long community_id;
 
+    @TableField("petType")
     private Integer pet_type;
     private String name;
     private Integer sex;
