@@ -44,7 +44,11 @@ public class NoticController {
 
 
     @PostMapping("/detail")
-    public Result detail(@RequestBody String json, HttpServletRequest request) {
+    public Result detail(@RequestBody String json) {
+        JSONObject jo = JSONObject.parseObject(json);
+        String id = jo.getString("id");
+        Long communityId = jo.getLong("community_id");
+
 
         return Result.ok();
     }
@@ -53,7 +57,7 @@ public class NoticController {
      */
     @PostMapping("/create")
     public Result create(@RequestBody String json) {
-        System.out.println("json = " + json);
+//        System.out.println("json = " + json);
         NoticInfo noticInfo = JSON.parseObject(json, NoticInfo.class);
         log.info("noticInfo :" + noticInfo);
 
