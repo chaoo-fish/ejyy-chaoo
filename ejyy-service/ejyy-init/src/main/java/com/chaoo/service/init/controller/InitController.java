@@ -1,5 +1,6 @@
 package com.chaoo.service.init.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chaoo.common.utils.IDCardUtil;
 import com.chaoo.common.utils.MD5;
@@ -60,22 +61,39 @@ public class InitController {
                 .build();
         propertyCompanyUserService.save(propertyCompanyUser);
 
-        // 保存小区信息
-        CommunityInfo communityInfo = CommunityInfo.builder()
-                .name(paramDto.getName())
-                .banner(paramDto.getBanner())
-                .province(paramDto.getProvince())
-                .city(paramDto.getCity())
-                .district(paramDto.getDistrict())
-                .phone(paramDto.getPhone())
-                .createdAt(new Date().getTime())
-                .createdBy(propertyCompanyUser.getId().longValue())
-                .build();
-        communityInfoService.save(communityInfo);
+
+        // 如果小区已存在
+        CommunityInfo one = communityInfoService.getOne(new LambdaQueryWrapper<CommunityInfo>().eq(CommunityInfo::getName, paramDto.getName()));
+        // 不存在才会去保存小区信息和设置
+        if (one == null) {
+            // 保存小区信息
+            CommunityInfo communityInfo = CommunityInfo.builder()
+                    .name(paramDto.getName())
+                    .banner(paramDto.getBanner())
+                    .province(paramDto.getProvince())
+                    .city(paramDto.getCity())
+                    .district(paramDto.getDistrict())
+                    .phone(paramDto.getPhone())
+                    .createdAt(new Date().getTime())
+                    .createdBy(propertyCompanyUser.getId().longValue())
+                    .build();
+            communityInfoService.save(communityInfo);
+
+            // 小区设置表
+            CommunitySetting communitySetting = CommunitySetting.builder()
+                    .accessNfc(paramDto.isAccess_nfc())
+                    .accessRemote(paramDto.isAccess_remote())
+                    .accessQrcode(paramDto.isAccess_qrcode())
+                    .fitmentPledge(paramDto.isFitment_pledge())
+                    .carportMaxCar(paramDto.getCarport_max_car())
+                    .communityId(communityInfo.getId())
+                    .build();
+            communitySettingService.save(communitySetting);
+        }
 
         // 个人和小区的中间表
         PropertyCompanyUserAccessCommunity accessCommunity = PropertyCompanyUserAccessCommunity.builder()
-                .communityId(communityInfo.getId())
+                .communityId(one.getId())
                 .propertyCompanyUserId(propertyCompanyUser.getId().longValue())
                 .build();
         propertyCompanyUserAccessCommunityService.save(accessCommunity);
@@ -87,16 +105,6 @@ public class InitController {
                 .build();
         propertyCompanyAuthService.save(propertyCompanyAuth);
 
-        // 小区设置表
-        CommunitySetting communitySetting = CommunitySetting.builder()
-                .accessNfc(paramDto.isAccess_nfc())
-                .accessRemote(paramDto.isAccess_remote())
-                .accessQrcode(paramDto.isAccess_qrcode())
-                .fitmentPledge(paramDto.isFitment_pledge())
-                .carportMaxCar(paramDto.getCarport_max_car())
-                .communityId(communityInfo.getId())
-                .build();
-        communitySettingService.save(communitySetting);
 
         return Result.ok();
     }
