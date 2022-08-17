@@ -2,6 +2,8 @@ package com.chaoo.service.basic.dto;
 
 import lombok.Data;
 
+import java.lang.reflect.Array;
+
 /**
  * @Author chaoo
  * @Date: 2022/08/16/ 19:14
@@ -17,8 +19,8 @@ public class NoticInfo {
     private Boolean oa_tpl_msg; // :false,
 
     private String tpl; // : "",
-    private String tpl_content; // : [],
+    private Object tpl_content; // : [],
 
-    private String content; //
+    private Object content; // []
     private Long community_id; //  3
 }

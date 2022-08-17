@@ -76,7 +76,7 @@ public class NoticController {
                 .overview(noticInfo.getOverview())
                 .community_id(noticInfo.getCommunity_id())
                 .created_by(noticInfo.getUser_id())
-                .content(noticInfo.getContent())
+                .content(JSONObject.toJSONString(noticInfo.getContent()))
                 .published(noticInfo.getPublished())
                 .published_at(noticInfo.getPublished() == 1 ? new Date().getTime() : null)
                 .published_by(noticInfo.getPublished() == 1 ? noticInfo.getUser_id() : null)
