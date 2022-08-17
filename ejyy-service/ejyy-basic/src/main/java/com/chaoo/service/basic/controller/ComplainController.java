@@ -1,6 +1,7 @@
 package com.chaoo.service.basic.controller;
 
 import com.chaoo.common.utils.Result;
+import com.chaoo.service.basic.dto.ComplainInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class ComplainController {
 
     @PostMapping("/create")
-    public Result create(){
+    public Result create(@RequestBody ComplainInfo complainInfo){
+        log.info("complainInfo: " + complainInfo);
 
         return Result.ok();
     }
