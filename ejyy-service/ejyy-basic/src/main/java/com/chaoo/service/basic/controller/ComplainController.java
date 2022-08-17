@@ -10,7 +10,9 @@ import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.ComplainDto;
 import com.chaoo.service.basic.dto.ComplainInfo;
 import com.chaoo.service.basic.entity.Complain;
+import com.chaoo.service.basic.entity.WechatMpUser;
 import com.chaoo.service.basic.service.ComplainService;
+import com.chaoo.service.basic.service.WechatMpUserService;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,9 +41,10 @@ public class ComplainController {
     private ComplainService complainService;
 
     @Autowired
-
     private PropertyCompanyUserService propertyCompanyUserService;
 
+    @Autowired
+    private WechatMpUserService wechatMpUserService;
 
     @PostMapping("/merge_option")
     public Result mergeOption(@RequestBody String json) {
@@ -59,8 +63,18 @@ public class ComplainController {
             return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "非法维修工单");
         }
 
-        Map<String, Object> data = new HashMap<>();
+        LambdaQueryWrapper<Complain> qw = new LambdaQueryWrapper<>();
+        qw.select(Complain::getId,Complain::getDescription,Complain::getType,Complain::getCategory,Complain::getStep,Complain::getCreated_at);
+        qw.isNull(Complain::getMerge_id);
+        qw.eq(Complain::getCommunity_id,communityId);
+        qw.eq(Complain::getId,id);
+        qw.le(Complain::getCreated_at,detail.getCreated_at() + 1000 * 60 *60 *24);
+        qw.ge(Complain::getCreated_at,detail.getCreated_at() - 1000 * 60 *60 *24);
+        qw.eq(Complain::getStep,1);
+        List<Complain> list = complainService.list(qw);
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("list",list);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
     }
     @PostMapping("/detail")
@@ -80,7 +94,7 @@ public class ComplainController {
         //
         PropertyCompanyUser allotInfo = null;
         PropertyCompanyUser disposedInfo = null;
-        PropertyCompanyUser referInfo = null;
+        Object referInfo = null;
         if (info.getStep() >= 2) {
             LambdaQueryWrapper<PropertyCompanyUser> qw = new LambdaQueryWrapper<>();
             qw.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
@@ -102,10 +116,10 @@ public class ComplainController {
             referInfo = propertyCompanyUserService.getOne(qw);
             log.info("查询 referInfo  getProperty_company_user_id完毕");
         } else {
-            LambdaQueryWrapper<PropertyCompanyUser> qw = new LambdaQueryWrapper<>();
-            qw.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
-            qw.eq(PropertyCompanyUser::getId, info.getWechat_mp_user_id());
-            referInfo = propertyCompanyUserService.getOne(qw);
+            LambdaQueryWrapper<WechatMpUser> qw = new LambdaQueryWrapper<>();
+            qw.select(WechatMpUser::getId, WechatMpUser::getReal_name);
+            qw.eq(WechatMpUser::getId, info.getWechat_mp_user_id());
+            referInfo = wechatMpUserService.getOne(qw);
             log.info("查询 referInfo getWechat_mp_user_id完毕");
         }
 
