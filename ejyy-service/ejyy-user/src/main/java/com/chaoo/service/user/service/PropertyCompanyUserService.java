@@ -3,7 +3,11 @@ package com.chaoo.service.user.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
+import com.chaoo.service.user.dto.UserListInfo;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author chaoo
@@ -25,4 +29,11 @@ public interface PropertyCompanyUserService extends IService<PropertyCompanyUser
      * @return
      */
     DepartJob info(Integer userId);
+
+    /**
+     * 员工
+     * @param community_id
+     * @return
+     */
+    List<UserListInfo> getEmploy(Long community_id);
 }

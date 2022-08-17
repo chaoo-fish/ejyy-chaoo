@@ -3,10 +3,13 @@ package com.chaoo.service.user.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
+import com.chaoo.service.user.dto.UserListInfo;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import com.chaoo.service.user.mapper.PropertyCompanyUserMapper;
 import com.chaoo.service.user.service.PropertyCompanyUserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PropertyCompanyUserServiceImpl extends ServiceImpl<PropertyCompanyUserMapper, PropertyCompanyUser> implements PropertyCompanyUserService {
@@ -28,5 +31,10 @@ public class PropertyCompanyUserServiceImpl extends ServiceImpl<PropertyCompanyU
     @Override
     public DepartJob info(Integer userId) {
         return baseMapper.getInfoByUserId(userId);
+    }
+
+    @Override
+    public List<UserListInfo> getEmploy(Long community_id) {
+        return baseMapper.getEmploy(community_id);
     }
 }

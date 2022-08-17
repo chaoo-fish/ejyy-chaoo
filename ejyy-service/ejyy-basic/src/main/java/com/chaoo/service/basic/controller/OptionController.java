@@ -1,6 +1,7 @@
 package com.chaoo.service.basic.controller;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
@@ -9,8 +10,9 @@ import com.chaoo.service.basic.dto.userBuildInfoDto;
 import com.chaoo.service.basic.entity.WechatMpUser;
 import com.chaoo.service.basic.service.UserBuildingService;
 import com.chaoo.service.basic.service.WechatMpUserService;
+import com.chaoo.service.user.dto.UserListInfo;
+import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,21 @@ public class OptionController {
     private WechatMpUserService wechatMpUserService;
     @Autowired
     private UserBuildingService userBuildingService;
+    @Autowired
+    private PropertyCompanyUserService propertyCompanyUserService;
+
+
+    @PostMapping("/colleague")
+    public Result colleague(@RequestBody String json) {
+        JSONObject jo = JSONObject.parseObject(json);
+        Long communityId = jo.getLong("community_id");
+
+        List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("list",list);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
+    }
+
 
     /**
      * 检查业主是否存在

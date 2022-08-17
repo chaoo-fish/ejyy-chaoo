@@ -3,10 +3,13 @@ package com.chaoo.service.user.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
+import com.chaoo.service.user.dto.UserListInfo;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @Author chaoo
@@ -45,4 +48,21 @@ public interface PropertyCompanyUserMapper extends BaseMapper<PropertyCompanyUse
             "where ejyy_property_company_user.id=#{userId}")
     DepartJob getInfoByUserId(@Param("userId") Integer userId);
 
+
+    // 查询员工
+    @Select("select ejyy_property_company_department.name as department, " +
+            "       ejyy_property_company_user.department_id, " +
+            "       ejyy_property_company_job.name        as job, " +
+            "       ejyy_property_company_user.job_id, " +
+            "       ejyy_property_company_user.real_name, " +
+            "       ejyy_property_company_user.id " +
+            "from ejyy_property_company_user " +
+            "         left join ejyy_property_company_department " +
+            "                   on ejyy_property_company_department.id = ejyy_property_company_user.department_id " +
+            "         left join ejyy_property_company_job " +
+            "                   on ejyy_property_company_job.id = ejyy_property_company_user.job_id " +
+            "where ejyy_property_company_user.id in " +
+            "      (select property_company_user_id from ejyy_property_company_user_access_community where community_id = =#{community_id}) " +
+            "  and ejyy_property_company_user.leave_office = 0;")
+    List<UserListInfo> getEmploy(@Param("community_id") Long community_id);
 }
