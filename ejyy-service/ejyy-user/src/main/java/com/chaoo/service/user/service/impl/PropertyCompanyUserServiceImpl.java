@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
 import com.chaoo.service.user.dto.UserListInfo;
+import com.chaoo.service.user.dto.UserSelectWork;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import com.chaoo.service.user.mapper.PropertyCompanyUserMapper;
 import com.chaoo.service.user.service.PropertyCompanyUserService;
@@ -36,5 +37,10 @@ public class PropertyCompanyUserServiceImpl extends ServiceImpl<PropertyCompanyU
     @Override
     public List<UserListInfo> getEmploy(Long community_id) {
         return baseMapper.getEmploy(community_id);
+    }
+
+    @Override
+    public UserSelectWork whoWork(Long id) {
+        return baseMapper.whoWork(id);
     }
 }

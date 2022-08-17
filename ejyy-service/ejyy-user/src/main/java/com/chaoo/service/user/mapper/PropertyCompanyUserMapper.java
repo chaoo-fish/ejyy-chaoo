@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
 import com.chaoo.service.user.dto.UserListInfo;
+import com.chaoo.service.user.dto.UserSelectWork;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * @Author chaoo
  * @Date: 2022/08/12/ 10:46
- *
+ * <p>
  * 用户
  */
 @Mapper
@@ -65,4 +66,17 @@ public interface PropertyCompanyUserMapper extends BaseMapper<PropertyCompanyUse
             "      (select property_company_user_id from ejyy_property_company_user_access_community where community_id = #{community_id}) " +
             "  and ejyy_property_company_user.leave_office = 0;")
     List<UserListInfo> getEmploy(@Param("community_id") Long community_id);
+
+    /**
+     * 指派员工处理投诉
+     * @param id
+     * @return
+     */
+    @Select("select ejyy_property_company_user.id, " +
+            "                ejyy_property_company_user.real_name, " +
+            "                ejyy_wechat_official_accounts_user.open_id, " +
+            "                ejyy_wechat_official_accounts_user.subscribed " +
+            "from ejyy_property_company_user left join ejyy_wechat_official_accounts_user on ejyy_wechat_official_accounts_user.union_id = ejyy_property_company_user.union_id " +
+            "where ejyy_property_company_user.id = #{id};")
+    UserSelectWork whoWork(@Param("id") Long id);
 }

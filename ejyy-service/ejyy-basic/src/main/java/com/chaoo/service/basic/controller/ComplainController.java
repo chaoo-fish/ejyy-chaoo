@@ -1,18 +1,19 @@
 package com.chaoo.service.basic.controller;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.ComplainDto;
 import com.chaoo.service.basic.dto.ComplainInfo;
+import com.chaoo.service.basic.dto.ComplainSearch;
 import com.chaoo.service.basic.entity.Complain;
 import com.chaoo.service.basic.entity.WechatMpUser;
 import com.chaoo.service.basic.service.ComplainService;
 import com.chaoo.service.basic.service.WechatMpUserService;
+import com.chaoo.service.user.dto.UserSelectWork;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,75 @@ public class ComplainController {
 
     @Autowired
     private WechatMpUserService wechatMpUserService;
+
+
+    @PostMapping("/list")
+    public Result list(@RequestBody ComplainSearch complainSearch) {
+
+
+        Map<String, Object> data = new HashMap<>();
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
+    }
+
+    /**
+     * 派单
+     *
+     * @param json
+     * @return
+     */
+    @PostMapping("/allot")
+    public Result allot(@RequestBody String json) {
+        JSONObject jo = JSONObject.parseObject(json);
+        Long communityId = jo.getLong("community_id");
+        Long id = jo.getLong("id");
+        Long disposeUserId = jo.getLong("dispose_user_id");
+        Long pcUserInfoId = jo.getLong("pcUserInfo_id");
+        LambdaQueryWrapper<Complain> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Complain::getId, id);
+        queryWrapper.eq(Complain::getCommunity_id, communityId);
+        queryWrapper.eq(Complain::getStep, 1);
+        Complain detail = complainService.getOne(queryWrapper);
+        if (detail == null) {
+            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "非法维修工单");
+        }
+
+        // disposedInfo
+        UserSelectWork disposedInfo = propertyCompanyUserService.whoWork(pcUserInfoId);
+        if (disposedInfo == null) {
+            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "非法维修工单");
+        }
+        /**
+         * 省略小程序和微信推送
+         */
+
+        // 更新
+        LambdaUpdateWrapper<Complain> cqw = new LambdaUpdateWrapper<>();
+        cqw.set(Complain::getStep, 2);
+        cqw.set(Complain::getAllot_user_id, pcUserInfoId);
+        cqw.set(Complain::getAlloted_at, new Date().getTime());
+        cqw.set(Complain::getDispose_user_id, disposeUserId);
+        cqw.eq(Complain::getId, id);
+        complainService.update(cqw);
+
+        disposedInfo.setOpen_id(null);
+        disposedInfo.setSubscribed(null);
+
+        // 获取真实姓名
+        LambdaQueryWrapper<PropertyCompanyUser> pclw = new LambdaQueryWrapper<PropertyCompanyUser>();
+        pclw.eq(PropertyCompanyUser::getId, pcUserInfoId)
+                .select(PropertyCompanyUser::getReal_name);
+        PropertyCompanyUser one = propertyCompanyUserService.getOne(pclw);
+        String realName = one.getReal_name();
+
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> allotInfo = new HashMap<>();
+        allotInfo.put("id", pcUserInfoId);
+        allotInfo.put("real_name", realName);
+        data.put("alloted_at", new Date().getTime());
+        data.put("allotInfo", allotInfo);
+        data.put("disposedInfo", disposedInfo);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
+    }
 
     @PostMapping("/merge_option")
     public Result mergeOption(@RequestBody String json) {

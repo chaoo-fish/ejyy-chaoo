@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.chaoo.service.user.dto.DepartJob;
 import com.chaoo.service.user.dto.LoginInfo;
 import com.chaoo.service.user.dto.UserListInfo;
+import com.chaoo.service.user.dto.UserSelectWork;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,4 +37,7 @@ public interface PropertyCompanyUserService extends IService<PropertyCompanyUser
      * @return
      */
     List<UserListInfo> getEmploy(Long community_id);
+
+
+    UserSelectWork whoWork( Long id);
 }

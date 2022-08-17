@@ -1,7 +1,9 @@
 package com.chaoo.service.user.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.chaoo.service.user.dto.CommunityDto;
 import com.chaoo.service.user.dto.CommunityList;
+import com.chaoo.service.user.entity.CommunityInfo;
 
 /**
  * @Author chaoo
@@ -9,6 +11,6 @@ import com.chaoo.service.user.dto.CommunityList;
  *
  * 小区信息业务接口
  */
-public interface CommunityInfoService {
+public interface CommunityInfoService extends IService<CommunityInfo> {
     CommunityDto getInfoByUserId(Long userId);
 }

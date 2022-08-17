@@ -2,15 +2,24 @@ package com.chaoo.service.basic.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.PhoneDto;
 import com.chaoo.service.basic.dto.userBuildInfoDto;
+import com.chaoo.service.basic.entity.Complain;
 import com.chaoo.service.basic.entity.WechatMpUser;
+import com.chaoo.service.basic.service.ComplainService;
 import com.chaoo.service.basic.service.UserBuildingService;
 import com.chaoo.service.basic.service.WechatMpUserService;
 import com.chaoo.service.user.dto.UserListInfo;
+import com.chaoo.service.user.dto.UserSelectWork;
+import com.chaoo.service.user.entity.CommunityInfo;
+import com.chaoo.service.user.entity.PropertyCompanyUser;
+import com.chaoo.service.user.service.CommunityInfoService;
 import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +45,21 @@ public class OptionController {
     @Autowired
     private PropertyCompanyUserService propertyCompanyUserService;
 
+    @Autowired
+    private ComplainService complainService;
 
+    @Autowired
+    private CommunityInfoService communityInfoService;
+
+
+
+
+    /**
+     * 员工列表
+     *
+     * @param json
+     * @return
+     */
     @PostMapping("/colleague")
     public Result colleague(@RequestBody String json) {
         JSONObject jo = JSONObject.parseObject(json);
@@ -45,46 +68,46 @@ public class OptionController {
         List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
         log.info("查询员工列表: " + JSONObject.toJSONString(list));
         Map<String, Object> data = new HashMap<>();
-        data.put("list",list);
-        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
+        data.put("list", list);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
 
     /**
      * 检查业主是否存在
+     *
      * @return
      */
     @PostMapping("/ower")
-    public Result checkPhone(@RequestBody PhoneDto phoneDto){
+    public Result checkPhone(@RequestBody PhoneDto phoneDto) {
         // 接受前端数据
 //        PhoneDto phoneDto = JSON.parseObject(json, PhoneDto.class);
 
         // 通过电话查询业主
         QueryWrapper<WechatMpUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("phone",phoneDto.getPhone());
-        queryWrapper.eq("intact",1);
-
+        queryWrapper.eq("phone", phoneDto.getPhone());
+        queryWrapper.eq("intact", 1);
         WechatMpUser owerInfo = wechatMpUserService.getOne(queryWrapper);
-        if (ObjectUtils.isEmpty(owerInfo)){ // 未查询到业主信息
-            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(),"未查询到业主信息");
+        if (ObjectUtils.isEmpty(owerInfo)) { // 未查询到业主信息
+            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "未查询到业主信息");
         }
         // 通过业主查住宅
         List<userBuildInfoDto> userBuildInfoDtos = userBuildingService.selectBuild(owerInfo.getId(), Long.valueOf(phoneDto.getCommunity_id()));
 
         if (userBuildInfoDtos.size() == 0) {
-            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(),"未查询到业主信息");
+            return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "未查询到业主信息");
         }
         Map<String, ArrayList<userBuildInfoDto>> buildings = new HashMap<>();
         for (userBuildInfoDto ud : userBuildInfoDtos) {
             if (1 == ud.getType()) { // 当前是住宅
                 if (!buildings.containsKey("houses")) {
-                    buildings.put("houses",new ArrayList<>());
+                    buildings.put("houses", new ArrayList<>());
                 }
                 buildings.get("houses").add(ud);
             }
             if (2 == ud.getType()) { // 当前是车位
                 if (!buildings.containsKey("carports")) {
-                    buildings.put("carports",new ArrayList<>());
+                    buildings.put("carports", new ArrayList<>());
                 }
                 buildings.get("carports").add(ud);
             }
@@ -96,8 +119,8 @@ public class OptionController {
             }
         }
         Map<String, Object> data = new HashMap<>();
-        data.put("owerInfo",owerInfo);
+        data.put("owerInfo", owerInfo);
 //        data.put("buildings",buildings); // 不需要
-        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 }
