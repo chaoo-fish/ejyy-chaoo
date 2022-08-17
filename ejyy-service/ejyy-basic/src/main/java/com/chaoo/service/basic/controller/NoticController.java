@@ -49,16 +49,15 @@ public class NoticController {
         String id = jo.getString("id");
         Long communityId = jo.getLong("community_id");
 
-
         return Result.ok();
     }
     /**
      * 创建消息 --- 阉割版
      */
     @PostMapping("/create")
-    public Result create(@RequestBody String json) {
+    public Result create(@RequestBody NoticInfo noticInfo) {
 //        System.out.println("json = " + json);
-        NoticInfo noticInfo = JSON.parseObject(json, NoticInfo.class);
+//        NoticInfo noticInfo = JSON.parseObject(json, NoticInfo.class);
         log.info("noticInfo :" + noticInfo);
 
 //        // 存 NoticeTpl 消息模板  noticeTplService
@@ -77,7 +76,7 @@ public class NoticController {
                 .overview(noticInfo.getOverview())
                 .community_id(noticInfo.getCommunity_id())
                 .created_by(noticInfo.getUser_id())
-                .content(noticInfo.getContent())
+                .content(JSONObject.toJSONString(noticInfo.getContent()))
                 .published(noticInfo.getPublished())
                 .published_at(noticInfo.getPublished() == 1 ? new Date().getTime() : null)
                 .published_by(noticInfo.getPublished() == 1 ? noticInfo.getUser_id() : null)

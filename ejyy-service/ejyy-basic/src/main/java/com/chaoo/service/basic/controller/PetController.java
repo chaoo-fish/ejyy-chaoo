@@ -116,12 +116,12 @@ public class PetController {
 
     /**
      * 宠物列表
-     * @param jsonPet
+     * @param
      * @return
      */
     @PostMapping("/list")
-    public Result list(@RequestBody String jsonPet) {
-        PetSearch ps = JSON.parseObject(jsonPet, PetSearch.class);
+    public Result list(@RequestBody PetSearch ps) {
+//        PetSearch ps = JSON.parseObject(jsonPet, PetSearch.class);
         log.info("宠物列表的查询条件: " + ps);
 
         // 构造分页构造器
@@ -156,12 +156,12 @@ public class PetController {
 
     /**
      * 宠物创建
-     * @param json
+     * @param
      * @return
      */
     @PostMapping("/create")
-    public Result create(@RequestBody String json) {
-        PetInfo petInfo = JSON.parseObject(json, PetInfo.class);
+    public Result create(@RequestBody PetInfo petInfo) {
+//        PetInfo petInfo = JSON.parseObject(json, PetInfo.class);
         Pet pet = Pet.builder()
                 .wechat_mp_user_id(petInfo.getUser_id())
                 .community_id(petInfo.getCommunity_id())
@@ -189,7 +189,7 @@ public class PetController {
                     .build();
             log.info("获取疫苗信息: " + pv);
             petVaccinateService.save(pv);
-            data.put("id", pv.getId());
+            data.put("id", pet.getId());
         }
 
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
