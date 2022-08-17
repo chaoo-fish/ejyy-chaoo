@@ -37,9 +37,9 @@ public class OptionController {
      * @return
      */
     @PostMapping("/ower")
-    public Result checkPhone(@RequestBody String json){
+    public Result checkPhone(@RequestBody PhoneDto phoneDto){
         // 接受前端数据
-        PhoneDto phoneDto = JSON.parseObject(json, PhoneDto.class);
+//        PhoneDto phoneDto = JSON.parseObject(json, PhoneDto.class);
 
         // 通过电话查询业主
         QueryWrapper<WechatMpUser> queryWrapper = new QueryWrapper<>();
