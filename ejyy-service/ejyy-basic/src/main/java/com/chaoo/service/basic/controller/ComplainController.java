@@ -50,7 +50,7 @@ public class ComplainController {
 
     @PostMapping("/list")
     public Result list(@RequestBody ComplainSearch complainSearch) {
-
+        System.out.println("complainSearch = " + complainSearch);
 
         Map<String, Object> data = new HashMap<>();
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
