@@ -43,6 +43,7 @@ public class OptionController {
         Long communityId = jo.getLong("community_id");
 
         List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
+        log.info("查询员工列表: " + JSONObject.toJSONString(list));
         Map<String, Object> data = new HashMap<>();
         data.put("list",list);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);

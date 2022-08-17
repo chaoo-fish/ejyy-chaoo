@@ -62,7 +62,7 @@ public interface PropertyCompanyUserMapper extends BaseMapper<PropertyCompanyUse
             "         left join ejyy_property_company_job " +
             "                   on ejyy_property_company_job.id = ejyy_property_company_user.job_id " +
             "where ejyy_property_company_user.id in " +
-            "      (select property_company_user_id from ejyy_property_company_user_access_community where community_id = =#{community_id}) " +
+            "      (select property_company_user_id from ejyy_property_company_user_access_community where community_id = #{community_id}) " +
             "  and ejyy_property_company_user.leave_office = 0;")
     List<UserListInfo> getEmploy(@Param("community_id") Long community_id);
 }
