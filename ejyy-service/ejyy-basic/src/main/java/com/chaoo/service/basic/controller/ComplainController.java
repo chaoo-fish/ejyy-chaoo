@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.ComplainDto;
@@ -49,10 +50,29 @@ public class ComplainController {
 
 
     @PostMapping("/list")
-    public Result list(@RequestBody ComplainSearch complainSearch) {
-        System.out.println("complainSearch = " + complainSearch);
+    public Result list(@RequestBody ComplainSearch cs) {
+        Page<Complain> pageInfo = new Page<>(cs.getPage_num(), cs.getPage_size());
+
+        LambdaQueryWrapper<Complain> clqw = new LambdaQueryWrapper<>();
+        clqw.eq(Complain::getCommunity_id,cs.getCommunity_id())
+                .eq(cs.getStep() != null, Complain::getStep, cs.getStep())
+                .eq(cs.getType() != null, Complain::getType, cs.getType())
+                .eq(cs.getCategory() != null, Complain::getCategory, cs.getCategory())
+                .orderByDesc(Complain::getId);
+        if (cs.getRefer() != null) {
+            if (cs.getRefer().equals("ower")) {
+                clqw.isNotNull(Complain::getWechat_mp_user_id);
+            } else {
+                clqw.isNotNull(Complain::getProperty_company_user_id);
+            }
+        }
+        complainService.page(pageInfo,clqw);
 
         Map<String, Object> data = new HashMap<>();
+        data.put("page_num", pageInfo.getCurrent());
+        data.put("page_size", pageInfo.getSize());
+        data.put("total", pageInfo.getTotal());
+        data.put("list", pageInfo.getRecords());
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
@@ -126,7 +146,7 @@ public class ComplainController {
         queryWrapper.isNull(Complain::getMerge_id);
         queryWrapper.eq(Complain::getId, id);
         queryWrapper.eq(Complain::getCommunity_id, communityId);
-        queryWrapper.eq(Complain::getStep,1);
+        queryWrapper.eq(Complain::getStep, 1);
 
         Complain detail = complainService.getOne(queryWrapper);
         if (ObjectUtils.isEmpty(detail)) {
@@ -134,19 +154,20 @@ public class ComplainController {
         }
 
         LambdaQueryWrapper<Complain> qw = new LambdaQueryWrapper<>();
-        qw.select(Complain::getId,Complain::getDescription,Complain::getType,Complain::getCategory,Complain::getStep,Complain::getCreated_at);
+        qw.select(Complain::getId, Complain::getDescription, Complain::getType, Complain::getCategory, Complain::getStep, Complain::getCreated_at);
         qw.isNull(Complain::getMerge_id);
-        qw.eq(Complain::getCommunity_id,communityId);
-        qw.eq(Complain::getId,id);
-        qw.le(Complain::getCreated_at,detail.getCreated_at() + 1000 * 60 *60 *24);
-        qw.ge(Complain::getCreated_at,detail.getCreated_at() - 1000 * 60 *60 *24);
-        qw.eq(Complain::getStep,1);
+        qw.eq(Complain::getCommunity_id, communityId);
+        qw.eq(Complain::getId, id);
+        qw.le(Complain::getCreated_at, detail.getCreated_at() + 1000 * 60 * 60 * 24);
+        qw.ge(Complain::getCreated_at, detail.getCreated_at() - 1000 * 60 * 60 * 24);
+        qw.eq(Complain::getStep, 1);
         List<Complain> list = complainService.list(qw);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("list",list);
-        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),data);
+        data.put("list", list);
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
+
     @PostMapping("/detail")
     public Result detail(@RequestBody String json) {
         JSONObject jo = JSONObject.parseObject(json);
