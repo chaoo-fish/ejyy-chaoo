@@ -99,7 +99,7 @@ public class ComplainController {
         }
 
         // disposedInfo
-        UserSelectWork disposedInfo = propertyCompanyUserService.whoWork(pcUserInfoId);
+        UserSelectWork disposedInfo = propertyCompanyUserService.whoWork(disposeUserId);
         if (disposedInfo == null) {
             return Result.ok(ResultCodeEnum.QUERY_ILLEFAL.getCode(), "非法维修工单");
         }

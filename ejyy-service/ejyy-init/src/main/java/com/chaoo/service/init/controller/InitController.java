@@ -11,6 +11,7 @@ import com.chaoo.service.init.entity.*;
 import com.chaoo.service.init.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class InitController {
 
     @ResponseBody
     @PostMapping("/run")
+    @Transactional
     public Result run(@RequestBody ParamDto paramDto) {
         // 验证 用户 账号唯一
         QueryWrapper<PropertyCompanyUser> queryWrapper = new QueryWrapper<>();
