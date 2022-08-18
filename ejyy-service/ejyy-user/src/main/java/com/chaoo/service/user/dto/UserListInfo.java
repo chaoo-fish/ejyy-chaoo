@@ -10,7 +10,6 @@ import java.io.Serializable;
  */
 @Data
 public class UserListInfo implements Serializable {
-
     private String department;
     private Long department_id;
     private String job;

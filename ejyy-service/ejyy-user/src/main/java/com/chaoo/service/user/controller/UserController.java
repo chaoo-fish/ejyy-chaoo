@@ -1,5 +1,6 @@
 package com.chaoo.service.user.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -107,7 +108,9 @@ public class UserController {
      */
     @GetMapping("/list/{communityId}")
     public List<UserListInfo> getEmploy(@PathVariable("communityId") Long communityId) {
-        return propertyCompanyUserService.getEmploy(communityId);
+        List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
+        System.out.println("list = " + JSON.toJSONString(list));;
+        return list;
     }
 
     // 退出
