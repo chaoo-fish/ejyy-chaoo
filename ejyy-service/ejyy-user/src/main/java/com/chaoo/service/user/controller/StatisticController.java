@@ -101,7 +101,7 @@ public class StatisticController {
         data.put("car_total", car_total);
         data.put("pet_total", pet_total);
         data.put("repairList", repairList);
-        data.put("complainList", new ArrayList<Object>()); // TODO open feign 去远程调用
+        data.put("complainList", new ArrayList<Object>());
         data.put("moveCarList", new ArrayList<Object>());
         data.put("petList", new ArrayList<Object>());
         data.put("vistorList", new ArrayList<Object>());
