@@ -22,6 +22,6 @@ public class CommunityInfo implements Serializable {
     private String city; // 小区所在市
     private String district; // 小区所在区
     private String phone; // 客服电话
-    private Long createdAt; // 创建时间
-    private Long createdBy; // 创建人
+    private Long created_at; // 创建时间
+    private Long created_by; // 创建人
 }

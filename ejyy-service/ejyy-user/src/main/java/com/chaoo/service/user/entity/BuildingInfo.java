@@ -16,13 +16,13 @@ import java.io.Serializable;
 @Builder
 public class BuildingInfo implements Serializable {
     private Integer id;
-    private Long communityId;
+    private Long community_id;
     private Integer type;
     private String area;
     private String building;
     private String unit;
     private String number;
-    private Float constructionArea;
-    private Long createdBy;
-    private Long createdAt;
+    private Float construction_area;
+    private Long created_by;
+    private Long created_at;
 }
