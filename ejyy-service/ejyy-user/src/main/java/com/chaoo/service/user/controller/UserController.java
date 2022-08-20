@@ -137,7 +137,7 @@ public class UserController {
         return Result.ok(200, data);
     }
 
-    // 实现登录
+    // 实现登录 TODO 赋予用户默认小区有问题，也有可能是初始化时候导致的
     @PostMapping("/account_login")
     public Result login(@RequestBody LoginParam loginParam, HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");

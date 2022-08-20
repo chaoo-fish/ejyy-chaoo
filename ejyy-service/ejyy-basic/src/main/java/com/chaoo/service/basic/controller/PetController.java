@@ -15,6 +15,7 @@ import com.chaoo.service.basic.service.PetService;
 import com.chaoo.service.basic.service.PetVaccinateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -22,7 +23,7 @@ import java.util.*;
 /**
  * @Author chaoo
  * @Date: 2022/08/15/ 21:17
- *
+ * <p>
  * 宠物
  */
 @Slf4j
@@ -51,12 +52,13 @@ public class PetController {
         // 先获取
         Pet pet = petService.getOne(queryWrapper);
         pet.setPet_license(petLicense);
-        pet.setPet_license_award_at(awardAt);;
+        pet.setPet_license_award_at(awardAt);
+        ;
         boolean flag = petService.updateById(pet);
         if (!flag) {
-            return Result.ok(ResultCodeEnum.DATA_MODEL_UPDATE_FAIL.getCode(),"更新宠物登记证件失败");
+            return Result.ok(ResultCodeEnum.DATA_MODEL_UPDATE_FAIL.getCode(), "更新宠物登记证件失败");
         }
-        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),"更新宠物登记证件成功");
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), "更新宠物登记证件成功");
     }
 
     /**
@@ -86,6 +88,7 @@ public class PetController {
 
     /**
      * 宠物详细信息
+     *
      * @param jsonPet
      * @return
      */
@@ -116,6 +119,7 @@ public class PetController {
 
     /**
      * 宠物列表
+     *
      * @param
      * @return
      */
@@ -156,6 +160,7 @@ public class PetController {
 
     /**
      * 宠物创建
+     *
      * @param
      * @return
      */
