@@ -3,51 +3,29 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ejyy-chaoo</artifactId>
+        <artifactId>ejyy-service</artifactId>
         <groupId>com.chaoo</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ejyy-service</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ejyy-user</module>
-        <module>ejyy-init</module>
-        <module>ejyy-basic</module>
-        <module>ejyy-notice</module>
-    </modules>
+    <artifactId>ejyy-notice</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.chaoo</groupId>
+            <artifactId>ejyy-user</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-
-        <!--共享模块-->
         <dependency>
             <groupId>com.chaoo</groupId>
             <artifactId>ejyy-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.penggle</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>2.3.2</version>
         </dependency>
 
         <!-- nacos -->
@@ -66,6 +44,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-
     </dependencies>
+
 </project>

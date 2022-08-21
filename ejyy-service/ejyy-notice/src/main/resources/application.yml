@@ -1,0 +1,35 @@
+server:
+  port: 8400
+
+spring:
+  application:
+    name: notice-server
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.33.135:3306/ejyy?useSSL=false&characterEncoding=UTF8
+    username: root
+    password: root
+  redis:
+    host: 192.168.33.135
+    port: 6379
+    database: 0
+    timeout: 18000000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.33.135:8848
+mybatis-plus:
+  type-aliases-package: com.chaoo.service.notice.mapper
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: ejyy_
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
