@@ -10,7 +10,6 @@ import com.chaoo.service.basic.entity.NoticeToUser;
 import com.chaoo.service.basic.entity.NoticeTpl;
 import com.chaoo.service.basic.service.NoticeToUserService;
 import com.chaoo.service.basic.service.NoticeTplService;
-import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -38,7 +37,6 @@ public class NoticController {
 
     @Autowired
     private NoticeToUserService noticeToUserService;
-
 
     @PostMapping("/detail")
     public Result detail(@RequestBody String json) {

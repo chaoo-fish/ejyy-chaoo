@@ -24,6 +24,6 @@ public class PropertyCompanyUserDefaultCommunityServiceImpl extends ServiceImpl<
         queryWrapper.eq("property_company_user_id", userId);
         PropertyCompanyUserDefaultCommunity community =
                 baseMapper.selectOne(queryWrapper);
-        return ObjectUtils.isEmpty(community) ? 0 : community.getCommunityId();
+        return ObjectUtils.isEmpty(community) ? 0 : community.getCommunity_id();
     }
 }

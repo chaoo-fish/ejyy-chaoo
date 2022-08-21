@@ -12,11 +12,11 @@ import com.chaoo.service.basic.dto.ComplainInfo;
 import com.chaoo.service.basic.dto.ComplainSearch;
 import com.chaoo.service.basic.entity.Complain;
 import com.chaoo.service.basic.entity.WechatMpUser;
+import com.chaoo.service.basic.feign.PropertyCompanyUserService;
 import com.chaoo.service.basic.service.ComplainService;
 import com.chaoo.service.basic.service.WechatMpUserService;
 import com.chaoo.service.user.dto.UserSelectWork;
 import com.chaoo.service.user.entity.PropertyCompanyUser;
-import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -120,11 +120,7 @@ public class ComplainController {
         disposedInfo.setSubscribed(null);
 
         // 获取真实姓名
-        LambdaQueryWrapper<PropertyCompanyUser> pclw = new LambdaQueryWrapper<PropertyCompanyUser>();
-        pclw.eq(PropertyCompanyUser::getId, pcUserInfoId)
-                .select(PropertyCompanyUser::getReal_name);
-        PropertyCompanyUser one = propertyCompanyUserService.getOne(pclw);
-        String realName = one.getReal_name();
+        String realName = propertyCompanyUserService.getRealName(pcUserInfoId);
 
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> allotInfo = new HashMap<>();
@@ -187,24 +183,17 @@ public class ComplainController {
         PropertyCompanyUser disposedInfo = null;
         Object referInfo = null;
         if (info.getStep() >= 2) {
-            LambdaQueryWrapper<PropertyCompanyUser> qw = new LambdaQueryWrapper<>();
-            qw.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
-            qw.eq(PropertyCompanyUser::getId, info.getAllot_user_id());
-            allotInfo = propertyCompanyUserService.getOne(qw);
+            log.info("查询 allotInfo 开始");
+            allotInfo = propertyCompanyUserService.getOne(info.getAllot_user_id());
             log.info("查询 allotInfo 完毕");
 
-            LambdaQueryWrapper<PropertyCompanyUser> qw1 = new LambdaQueryWrapper<>();
-            qw1.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
-            qw1.eq(PropertyCompanyUser::getId, info.getDispose_user_id());
-            disposedInfo = propertyCompanyUserService.getOne(qw1);
+            log.info("查询 disposedInfo 开始");
+            disposedInfo = propertyCompanyUserService.getOne(info.getDispose_user_id());
             log.info("查询 disposedInfo 完毕");
         }
 
         if (info.getProperty_company_user_id() != null) {
-            LambdaQueryWrapper<PropertyCompanyUser> qw = new LambdaQueryWrapper<>();
-            qw.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
-            qw.eq(PropertyCompanyUser::getId, info.getProperty_company_user_id());
-            referInfo = propertyCompanyUserService.getOne(qw);
+            referInfo = propertyCompanyUserService.getOne(info.getProperty_company_user_id());
             log.info("查询 referInfo  getProperty_company_user_id完毕");
         } else {
             LambdaQueryWrapper<WechatMpUser> qw = new LambdaQueryWrapper<>();

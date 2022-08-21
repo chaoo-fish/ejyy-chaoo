@@ -1,6 +1,8 @@
 package com.chaoo.service.user.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chaoo.common.utils.*;
@@ -54,10 +56,62 @@ public class UserController {
     private PropertyCompanyUserDefaultCommunityService propertyCompanyUserDefaultCommunityService;
     @Autowired
     private DefaultKaptcha defaultKaptcha;
-
     @Autowired
     private RedisTemplate redisTemplate;
 
+
+    /**
+     * 远程调用
+     * @param id
+     * @return
+     */
+    @GetMapping("/getOne/{id}")
+    PropertyCompanyUser getOne(@PathVariable("id") Integer id) {
+        LambdaQueryWrapper<PropertyCompanyUser> qw = new LambdaQueryWrapper<>();
+        qw.select(PropertyCompanyUser::getId, PropertyCompanyUser::getReal_name);
+        qw.eq(PropertyCompanyUser::getId, id);
+        return propertyCompanyUserService.getOne(qw);
+    }
+
+    /**
+     * 远程调用获取员工真实姓名
+     *
+     * @param pcUserInfoId
+     * @return
+     */
+    @GetMapping("/getRealName/{pcUserInfoId}")
+    String getRealName(@PathVariable("pcUserInfoId") Long pcUserInfoId) {
+        LambdaQueryWrapper<PropertyCompanyUser> pclw = new LambdaQueryWrapper<PropertyCompanyUser>();
+        pclw.eq(PropertyCompanyUser::getId, pcUserInfoId)
+                .select(PropertyCompanyUser::getReal_name);
+        return propertyCompanyUserService.getOne(pclw).getReal_name();
+    }
+
+    /**
+     * 提供远程调用的方法
+     *
+     * @param disposeUserId
+     *         维修人id
+     * @return 指派谁去维修
+     */
+    @GetMapping("/whoWork/{disposeUserId}")
+    public UserSelectWork whoWork(@PathVariable("disposeUserId") Long disposeUserId) {
+        return propertyCompanyUserService.whoWork(disposeUserId);
+    }
+
+    /**
+     * 提供远程调用的方法
+     *
+     * @param communityId
+     *         社区id
+     * @return 投诉需要指派的员工信息
+     */
+    @GetMapping("/list/{communityId}")
+    public List<UserListInfo> getEmploy(@PathVariable("communityId") Long communityId) {
+        List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
+        System.out.println("list = " + JSON.toJSONString(list));;
+        return list;
+    }
 
     // 退出
     @GetMapping("/logout")
@@ -66,14 +120,14 @@ public class UserController {
         String account = TokenManager.getNameFromToken(token);
         // 通过用户名查找id
         QueryWrapper<PropertyCompanyUser> pcq = new QueryWrapper<>();
-        pcq.eq("account",account);
+        pcq.eq("account", account);
         // 用户 id
         Integer propertyCompanyUserId = propertyCompanyUserService.getOne(pcq).getId();
         UpdateWrapper<PropertyCompanyAuth> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("property_company_user_id",propertyCompanyUserId);
+        updateWrapper.eq("property_company_user_id", propertyCompanyUserId);
         updateWrapper.set("token", null);
         propertyCompanyAuthService.update(updateWrapper);
-        return Result.ok(ResultCodeEnum.SUCCESS.getCode(),"账号已退出");
+        return Result.ok(ResultCodeEnum.SUCCESS.getCode(), "账号已退出");
     }
 
     @GetMapping("/info")

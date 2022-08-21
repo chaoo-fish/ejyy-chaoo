@@ -28,7 +28,6 @@ public class StatisticController {
     @Autowired
     private RepairService repairService;
 
-
     //@PostMapping("/statistic/analysis")
     @PostMapping("/analysis")
     public Result analysis(@RequestBody StatisticDto StatisticDto) {
@@ -87,51 +86,6 @@ public class StatisticController {
         queryWrapper1.between("created_at", time - 1000 * 6 * 24 * 60 * 60, time);
         List<Repair> repairList = repairService.list(queryWrapper1);
 
-        /*
-        const day_start = moment()
-                    .startOf('day')
-                    .valueOf();
-        const day_end = moment()
-                    .endOf('day')
-                    .valueOf();
-
-        const complainList = await ctx.model
-                    .from('ejyy_complain')
-                    .where('community_id', community_id)
-                    .andWhere('created_at', '>=', day_start - 1000 * 6 * 24 * 60 * 60)
-                    .andWhere('created_at', '<=', day_end)
-                    .select('created_at', 'alloted_at', 'disposed_at', 'finished_at', 'rate');
-
-        const moveCarList = await ctx.model
-                    .from('ejyy_move_car')
-                    .where('community_id', community_id)
-                    .andWhere('created_at', '>=', day_start - 1000 * 6 * 24 * 60 * 60)
-                    .andWhere('created_at', '<=', day_end)
-                    .select('created_at');
-
-        const petList = await ctx.model
-                    .from('ejyy_pet')
-                    .where('community_id', community_id)
-                    .andWhere('created_at', '>=', day_start - 1000 * 6 * 24 * 60 * 60)
-                    .andWhere('created_at', '<=', day_end)
-                    .select('created_at');
-
-        const vistorList = await ctx.model
-                    .from('ejyy_vistor')
-                    .where('community_id', community_id)
-                    .andWhere('created_at', '>=', day_start - 1000 * 6 * 24 * 60 * 60)
-                    .andWhere('created_at', '<=', day_end)
-                    .select('created_at');
-
-        const noticeList = await ctx.model
-                    .from('ejyy_notice_to_user')
-                    .where('community_id', community_id)
-                    .andWhere('created_at', '>=', day_start - 1000 * 6 * 24 * 60 * 60)
-                    .andWhere('created_at', '<=', day_end)
-                    .select('created_at');
-            }
-        };
-        }*/
         Map<String, Object> data = new HashMap<>();
         data.put("house_total", house_total);
         data.put("house_binding_total", house_binding_total);

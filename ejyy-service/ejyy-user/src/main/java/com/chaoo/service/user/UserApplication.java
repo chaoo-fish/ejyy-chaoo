@@ -9,7 +9,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @Author chaoo
  * @Date: 2022/08/12/ 9:32
  */
-@SpringBootApplication
+@SpringBootApplication(
+        scanBasePackages = {"com.chaoo.service"}
+)
 @MapperScan("com.chaoo.service.user.mapper")
 @EnableDiscoveryClient // 开启服务发现 nacos
 public class UserApplication {
