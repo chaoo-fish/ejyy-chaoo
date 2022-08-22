@@ -1,7 +1,5 @@
 package com.chaoo.service.user.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +16,6 @@ import java.io.Serializable;
 @Builder
 public class PropertyCompanyUserDefaultCommunity implements Serializable {
     private Long id;
-    private Long propertyCompanyUserId; // 公司编号
-    private Long communityId; // 小区编号
+    private Long property_company_user_id; // 公司编号
+    private Long community_id; // 小区编号
 }

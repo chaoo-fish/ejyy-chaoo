@@ -16,6 +16,6 @@ import java.io.Serializable;
 @Builder
 public class PropertyCompanyAuth implements Serializable {
     private Long id;
-    private Long propertyCompanyUserId; // 公司用户编号
+    private Long property_company_user_id; // 公司用户编号
     private String token; // 令牌
 }

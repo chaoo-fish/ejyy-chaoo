@@ -1,26 +1,16 @@
 package com.chaoo.service.basic.controller;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.PhoneDto;
 import com.chaoo.service.basic.dto.userBuildInfoDto;
-import com.chaoo.service.basic.entity.Complain;
 import com.chaoo.service.basic.entity.WechatMpUser;
-import com.chaoo.service.basic.service.ComplainService;
+import com.chaoo.service.basic.feign.PropertyCompanyUserService;
 import com.chaoo.service.basic.service.UserBuildingService;
 import com.chaoo.service.basic.service.WechatMpUserService;
 import com.chaoo.service.user.dto.UserListInfo;
-import com.chaoo.service.user.dto.UserSelectWork;
-import com.chaoo.service.user.entity.CommunityInfo;
-import com.chaoo.service.user.entity.PropertyCompanyUser;
-import com.chaoo.service.user.service.CommunityInfoService;
-import com.chaoo.service.user.service.PropertyCompanyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -45,15 +35,6 @@ public class OptionController {
     @Autowired
     private PropertyCompanyUserService propertyCompanyUserService;
 
-    @Autowired
-    private ComplainService complainService;
-
-    @Autowired
-    private CommunityInfoService communityInfoService;
-
-
-
-
     /**
      * 员工列表
      *
@@ -65,7 +46,10 @@ public class OptionController {
         JSONObject jo = JSONObject.parseObject(json);
         Long communityId = jo.getLong("community_id");
 
+        log.info("--->查询员工列表前");
+
         List<UserListInfo> list = propertyCompanyUserService.getEmploy(communityId);
+
         log.info("查询员工列表: " + JSONObject.toJSONString(list));
         Map<String, Object> data = new HashMap<>();
         data.put("list", list);
