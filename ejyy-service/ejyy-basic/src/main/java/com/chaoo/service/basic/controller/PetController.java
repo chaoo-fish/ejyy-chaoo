@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author chaoo
@@ -51,12 +52,14 @@ public class PetController {
         // 先获取
         Pet pet = petService.getOne(queryWrapper);
         pet.setPet_license(petLicense);
-        pet.setPet_license_award_at(awardAt);
-        ;
+        pet.setPet_license_award_at(awardAt);;
         boolean flag = petService.updateById(pet);
         if (!flag) {
             return Result.ok(ResultCodeEnum.DATA_MODEL_UPDATE_FAIL.getCode(), "更新宠物登记证件失败");
         }
+        String key = "pet_" + id;
+        redisTemplate.delete(key);
+        log.info("PET更新宠物登记删除缓存");
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), "更新宠物登记证件成功");
     }
 
@@ -81,6 +84,10 @@ public class PetController {
         petVaccinateService.save(pv);
         Map<String, Object> data = new HashMap<>();
         data.put("id", pv);
+
+        String key = "pet_" + id;
+        redisTemplate.delete(key);
+        log.info("PET更新宠物疫苗删除缓存");
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
@@ -98,7 +105,7 @@ public class PetController {
         Integer communityId = jo.getInteger("community_id");
 
         // redis Key
-        String key = "pet_" + id + "_" + communityId;
+        String key = "pet_" + id;
         Map<String, Object> data = new HashMap<>();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             data = (Map<String, Object>) redisTemplate.opsForValue().get(key);
@@ -122,8 +129,8 @@ public class PetController {
 
         data.put("info", info);
         data.put("vaccinates", vaccinates);
-        redisTemplate.opsForValue().set(key, data);
-        log.info("PET宠物缓存生效" + data);
+        redisTemplate.opsForValue().set(key, data,60 * 24, TimeUnit.HOURS); // 存24小时
+        log.info("PET查看宠物存入缓存" + data);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
@@ -205,7 +212,10 @@ public class PetController {
             petVaccinateService.save(pv);
             data.put("id", pet.getId());
         }
-
+        // redis 缓存
+        String key = "pet_" + pet.getId();
+        redisTemplate.opsForValue().set(key, data,60 * 24, TimeUnit.HOURS); // 存24小时
+        log.info("PET创建宠物存入缓存" + data);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 }
