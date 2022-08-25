@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @Author chaoo
  * @Date: 2022/08/16/ 16:17
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PetVaccinateLessInfo {
+public class PetVaccinateLessInfo implements Serializable {
     private Long vaccinated_at;
     private String vaccine_type;
 }

@@ -1,21 +1,18 @@
 package com.chaoo.service.basic.controller;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chaoo.common.utils.Result;
 import com.chaoo.common.utils.ResultCodeEnum;
 import com.chaoo.service.basic.dto.*;
 import com.chaoo.service.basic.entity.Pet;
-import com.chaoo.service.basic.entity.PetJson;
 import com.chaoo.service.basic.entity.PetVaccinate;
 import com.chaoo.service.basic.service.PetService;
 import com.chaoo.service.basic.service.PetVaccinateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -36,6 +33,8 @@ public class PetController {
     private PetService petService;
     @Autowired
     private PetVaccinateService petVaccinateService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 更新宠物编号
@@ -97,6 +96,16 @@ public class PetController {
         JSONObject jo = JSONObject.parseObject(jsonPet);
         String id = jo.getString("id");
         Integer communityId = jo.getInteger("community_id");
+
+        // redis Key
+        String key = "pet_" + id + "_" + communityId;
+        Map<String, Object> data = new HashMap<>();
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            data = (Map<String, Object>) redisTemplate.opsForValue().get(key);
+            log.info("PET宠物缓存生效" + data);
+            return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
+        }
+
         // 宠物详细信息
         PetDetail info = petService.deatil(id, communityId);
         // 宠物疫苗
@@ -111,9 +120,10 @@ public class PetController {
                     .build());
         }
 
-        Map<String, Object> data = new HashMap<>();
         data.put("info", info);
         data.put("vaccinates", vaccinates);
+        redisTemplate.opsForValue().set(key, data);
+        log.info("PET宠物缓存生效" + data);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), data);
     }
 
@@ -125,11 +135,10 @@ public class PetController {
      */
     @PostMapping("/list")
     public Result list(@RequestBody PetSearch ps) {
-//        PetSearch ps = JSON.parseObject(jsonPet, PetSearch.class);
-        log.info("宠物列表的查询条件: " + ps);
+        log.info("PET宠物列表的查询条件: " + ps);
 
         // 构造分页构造器
-        Page pageInfo = new Page(ps.getPage_num(), ps.getPage_size());
+        Page<Pet> pageInfo = new Page<>(ps.getPage_num(), ps.getPage_size());
 
         // 构造条件构造器
         LambdaQueryWrapper<Pet> queryWrapper = new LambdaQueryWrapper<>();
@@ -180,7 +189,7 @@ public class PetController {
                 .pet_license_award_at(new Date().getTime())
                 .created_at(new Date().getTime())
                 .build();
-        log.info("获取宠物信息: " + pet);
+        log.info("PET获取宠物信息: " + pet);
         petService.save(pet);
         // 宠物有证
         Map<String, Object> data = new HashMap<>();
@@ -192,7 +201,7 @@ public class PetController {
                     .vaccine_type(petInfo.getVaccine_type())
                     .created_at(new Date().getTime())
                     .build();
-            log.info("获取疫苗信息: " + pv);
+            log.info("PET获取疫苗信息: " + pv);
             petVaccinateService.save(pv);
             data.put("id", pet.getId());
         }

@@ -2,6 +2,8 @@ package com.chaoo.service.basic.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author chaoo
  * @Date: 2022/08/16/ 15:42
@@ -9,7 +11,7 @@ import lombok.Data;
  * 多表查询的宠物详细信息
  */
 @Data
-public class PetDetail {
+public class PetDetail implements Serializable {
     private Long id;
     private Long wechat_mp_user_id;
     private String name;

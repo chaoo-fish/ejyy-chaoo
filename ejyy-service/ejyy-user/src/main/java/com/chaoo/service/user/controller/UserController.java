@@ -253,10 +253,10 @@ public class UserController {
 
         // 4.添加登录日志 这一步也可以放到消息监听器去做
         propertyCompanyUserLoginService.save(PropertyCompanyUserLogin.builder()
-                .propertyCompanyUserId(loginInfo.getId().longValue())
-                .userAgent(userAgent) // 浏览器请求头中信息
+                .property_company_user_id(loginInfo.getId().longValue())
+                .user_agent(userAgent) // 浏览器请求头中信息
                 .ip(IPUtils.getIpAddr(request))  // 客户端的IP
-                .loginAt(new Date().getTime())
+                .login_at(new Date().getTime())
                 .build());
 
 
@@ -293,8 +293,8 @@ public class UserController {
             if (postInfo.getCommunity_list().size() > 0) {
                 // 添加
                 propertyCompanyUserDefaultCommunityService.save(PropertyCompanyUserDefaultCommunity.builder()
-                        .communityId(postInfo.getCommunity_list().get(0).getCommunity_id())
-                        .propertyCompanyUserId(loginInfo.getId().longValue())
+                        .community_id(postInfo.getCommunity_list().get(0).getCommunity_id())
+                        .property_company_user_id(loginInfo.getId().longValue())
                         .build());
             }
         } else {

@@ -2,6 +2,8 @@ package com.chaoo.service.basic.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author chaoo
  * @Date: 2022/08/16/ 10:30
@@ -9,7 +11,7 @@ import lombok.Data;
  * 接收宠物列表的分页数据
  */
 @Data
-public class PetSearch {
+public class PetSearch implements Serializable {
     private Integer page_num; //  1,
     private Integer page_size; //  30,
     private Integer community_id; //  3,
