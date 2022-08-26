@@ -11,6 +11,7 @@ import com.chaoo.service.basic.entity.PetVaccinate;
 import com.chaoo.service.basic.service.PetService;
 import com.chaoo.service.basic.service.PetVaccinateService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,9 @@ public class PetController {
     private PetVaccinateService petVaccinateService;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
+
 
     /**
      * 更新宠物编号
@@ -60,6 +64,8 @@ public class PetController {
         String key = "pet_" + id;
         redisTemplate.delete(key);
         log.info("PET更新宠物登记删除缓存");
+        rocketMQTemplate.convertAndSend("PetUpdate",key);
+        log.info("RocketMQ消息队列发送宠物更新,宠物id: "+id);
         return Result.ok(ResultCodeEnum.SUCCESS.getCode(), "更新宠物登记证件成功");
     }
 
